@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using API.Models;
+using Task = API.Models.Task;
 
 namespace API.Data
 {
@@ -10,7 +11,7 @@ namespace API.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<InventoryItem> InventoryItems { get; set; }
-        public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<Task> Tasks { get; set; }
         public DbSet<Note> Notes { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Contact> Contacts { get; set; }
