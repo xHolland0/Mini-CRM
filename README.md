@@ -5,8 +5,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/github/last-commit/xHolland0/Mini_CRM?color=green&style=plastic" />
-  <img src="https://img.shields.io/github/languages/top/xHolland0/Mini_CRM?style=plastic " />
+  <img src="https://img.shields.io/github/last-commit/xHolland0/Mini-CRM?color=green&style=plastic" />
+  <img src="https://img.shields.io/github/languages/top/xHolland0/Mini-CRM?style=plastic " />
   <img src="https://img.shields.io/badge/status-Development-yellow?style=plastic " />
 </p>
 
