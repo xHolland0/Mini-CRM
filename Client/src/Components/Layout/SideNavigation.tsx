@@ -9,8 +9,8 @@ import {
   Typography,
   Box
 } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard'; // Dashboard ikonu
-import PeopleIcon from '@mui/icons-material/People';     // Kişiler/Kullanıcılar ikonu
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import PeopleIcon from '@mui/icons-material/People'; 
 
 // Sidebar genişliği
 const drawerWidth = 240;
@@ -23,8 +23,8 @@ function SideNavigation({ onNavigate }: { onNavigate: (page: string) => void }) 
   // Navigasyon öğelerini tanımla
   const navItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: 'dashboard' },
-    { text: 'Kullanıcılar', icon: <PeopleIcon />, path: 'users' }, // 'Contacts' yerine 'Users' daha uygun olabilir
-    // İleride buraya başka sayfalar eklenebilir (örn: 'Ayarlar', 'Raporlar')
+    { text: 'Kullanıcılar', icon: <PeopleIcon />, path: 'users' }, 
+    // İleride buraya başka sayfalar eklenecek
   ];
 
   return (
