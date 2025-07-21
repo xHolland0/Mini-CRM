@@ -1,19 +1,19 @@
 import { Typography, Box } from '@mui/material';
-import UserProfile from '../Components/UserProfile'; // UserProfile component'ini içe aktar
-import UserList from '../Components/UserList';     // UserList component'ini içe aktar
 
 /**
  * Dashboard ana sayfasının içeriğini gösteren bileşen.
- * Kullanıcı profili ve API'den çekilen kullanıcı listesini içerir.
  */
 function DashboardPage() {
   return (
-    <Box>
+    <Box sx={{ textAlign: 'center' }}> {/* İçeriği yatayda ortalamak için eklendi */}
       <Typography variant="h4" component="h1" gutterBottom>
         Ana Dashboard
       </Typography>
-      <UserProfile /> {/* Kullanıcı profilini göster */}
-      <UserList />    {/* API'den çekilen kullanıcı listesini göster */}
+      <Typography variant="body1" sx={{ mb: 4 }}>
+        Uygulamanıza hoş geldiniz! Burası ana kontrol paneliniz.
+      </Typography>
+      
+      {/* UserList artık ayrı bir sayfada olduğu için buradan kaldırıldı */}
     </Box>
   );
 }

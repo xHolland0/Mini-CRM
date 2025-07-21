@@ -1,26 +1,25 @@
 import { useState, useEffect } from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
-import useApi from '../Hooks/UseApi'; // useApi hook'unu içe aktar
-import { Typography, Box, CircularProgress, Paper, List, ListItem, ListItemText } from '@mui/material'; // Material UI bileşenleri
+import useApi from '../../Hooks/UseApi'; // useApi hook'unun yolu güncellendi
+import { Typography, Box, CircularProgress, Paper, List, ListItem, ListItemText } from '@mui/material';
 
 /**
- * API'den kullanıcı listesini çeken ve görüntüleyen bileşen.
+ * API'den kullanıcı listesini çeken ve görüntüleyen sayfa bileşeni.
  */
-function UserList() {
-  const { isAuthenticated } = useAuth0(); // Sadece isAuthenticated yeterli
+function UserListPage() { // Component adını güncelledik
+  const { isAuthenticated } = useAuth0();
   const api = useApi();
   const [users, setUsers] = useState<any[]>([]);
   const [apiLoading, setApiLoading] = useState<boolean>(false);
   const [apiError, setApiError] = useState<string | null>(null);
 
-  // Kullanıcı kimliği doğrulandığında API'den kullanıcıları çek
   useEffect(() => {
     const fetchUsers = async () => {
-      if (isAuthenticated) { //isAuthenticated kontrolü
+      if (isAuthenticated) {
         setApiLoading(true);
         setApiError(null);
         try {
-          const response = await api.get('/users'); 
+          const response = await api.get('/users');
           setUsers(response.data);
         } catch (err: any) {
           console.error('Kullanıcılar çekilirken hata oluştu:', err);
@@ -29,18 +28,18 @@ function UserList() {
           setApiLoading(false);
         }
       } else {
-        setUsers([]); // Oturum açmamışsa listeyi temizle
+        setUsers([]);
         setApiError(null);
       }
     };
 
     fetchUsers();
-  }, [isAuthenticated, api]); // Bağımlılıklar: isAuthenticated ve api
+  }, [isAuthenticated, api]);
 
   return (
-    <Box sx={{ mt: 4 }}>
-      <Typography variant="h5" component="h3" gutterBottom>
-        API'den Çekilen Kullanıcılar:
+    <Box>
+      <Typography variant="h4" component="h1" gutterBottom> {/* h4 olarak güncelledik */}
+        Kullanıcı Listesi
       </Typography>
       {apiLoading ? (
         <CircularProgress />
@@ -57,10 +56,10 @@ function UserList() {
           </List>
         </Paper>
       ) : (
-        <Typography>Henüz kullanıcı bulunamadı veya yetkiniz yok.</Typography>
+        <Typography>Henüz kullanıcı bulunamadı.</Typography>
       )}
     </Box>
   );
 }
 
-export default UserList;
+export default UserListPage; // Export adını güncelledik

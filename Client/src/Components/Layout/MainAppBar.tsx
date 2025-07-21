@@ -1,5 +1,6 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
@@ -9,16 +10,24 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 
-import AuthButtons from '../AuthButtons';
+
+import NotificationsActiveOutlinedIcon from '@mui/icons-material/NotificationsActiveOutlined';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+
+import type { SxProps, Theme } from '@mui/material/styles'; 
+
+import AuthButtons from '../AuthButtons'; 
+import { Badge } from '@mui/material';
 
 /**
  * Uygulamanın ana navigasyon çubuğu (Navbar) bileşeni.
  * Logo/başlık, giriş/çıkış butonları, profil menüsü ve bildirim ikonunu içerir.
+ * Sayfanın en üstünde sabitlenir (fixed).
  */
-function MainAppBar() {
+function MainAppBar({ sx }: { sx?: SxProps<Theme> }) { 
   const { isAuthenticated, user } = useAuth0();
+  const navigate = useNavigate();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -31,30 +40,40 @@ function MainAppBar() {
 
   const handleMenuItemClick = (path: string) => {
     handleCloseUserMenu();
-    console.log(`Navigating to: ${path}`);
+    navigate(path);
   };
 
   return (
-    // position="fixed" ile AppBar'ı en üste sabitle ve zIndex ile diğer elementlerin üzerinde olmasını sağla
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}> 
+    <AppBar 
+      position="fixed" 
+      sx={{ 
+        zIndex: (theme) => theme.zIndex.drawer + 1, // Diğer elementlerin üzerinde olmasını sağla
+        borderBottom: 0.1, 
+        borderColor: 'white',
+        backgroundColor:'#242424',
+        ...sx // Dışarıdan gelen sx prop'larını da uygula (width, ml, top gibi)
+      }} 
+      elevation={0}
+    > 
       <Toolbar>
-        <Typography 
-          variant="h6" 
-          noWrap 
-          component="div" 
-          sx={{ flexGrow: 0, display: { xs: 'none', sm: 'block' } }}
-        >
-          Mini CRM
-        </Typography>
+            <Tooltip title="Ara">
+              <IconButton color="inherit" sx={{ mr: 1 }}>
+                <SearchOutlinedIcon />
+              </IconButton>
+            </Tooltip>
 
         <Box sx={{ flexGrow: 1 }} /> 
 
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {isAuthenticated && (
+          {isAuthenticated && ( 
             <Tooltip title="Bildirimler">
-              <IconButton color="inherit" sx={{ mr: 1 }}>
-                <NotificationsIcon />
+
+              <IconButton>
+                  <Badge sx={{ mr: 1 }} badgeContent={100} color="error" showZero>
+                    <NotificationsActiveOutlinedIcon sx={{color:'white'}} />
+                  </Badge>
               </IconButton>
+
             </Tooltip>
           )}
 
@@ -83,10 +102,10 @@ function MainAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
               >
-                <MenuItem onClick={() => handleMenuItemClick('/profile')}>
+                <MenuItem onClick={() => handleMenuItemClick('/dashboard/profile')}>
                   <Typography textAlign="center">Profil</Typography>
                 </MenuItem>
-                <MenuItem onClick={() => handleMenuItemClick('/settings')}>
+                <MenuItem onClick={() => handleMenuItemClick('/dashboard/settings')}>
                   <Typography textAlign="center">Ayarlar</Typography>
                 </MenuItem>
               </Menu>
