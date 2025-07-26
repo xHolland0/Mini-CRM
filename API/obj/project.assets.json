@@ -4174,19 +4174,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/yusufokancevik/.nuget/packages/": {}
+    "C:\\Users\\okanc\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/yusufokancevik/Desktop/Git Upload/Mini-CRM/API/API.csproj",
+      "projectUniqueName": "C:\\Users\\okanc\\Desktop\\Git_Upload\\Mini-CRM\\API\\API.csproj",
       "projectName": "API",
-      "projectPath": "/Users/yusufokancevik/Desktop/Git Upload/Mini-CRM/API/API.csproj",
-      "packagesPath": "/Users/yusufokancevik/.nuget/packages/",
-      "outputPath": "/Users/yusufokancevik/Desktop/Git Upload/Mini-CRM/API/obj/",
+      "projectPath": "C:\\Users\\okanc\\Desktop\\Git_Upload\\Mini-CRM\\API\\API.csproj",
+      "packagesPath": "C:\\Users\\okanc\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\okanc\\Desktop\\Git_Upload\\Mini-CRM\\API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/yusufokancevik/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\okanc\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net9.0"
@@ -4268,7 +4268,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.303/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.300/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

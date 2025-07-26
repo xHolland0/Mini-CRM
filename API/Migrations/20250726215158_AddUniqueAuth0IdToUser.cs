@@ -5,25 +5,23 @@
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class AddAuth0IdAndRolesToUsers : Migration
+    public partial class AddUniqueAuth0IdToUser : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "Auth0Id",
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Auth0Id",
                 table: "Users",
-                type: "TEXT",
-                maxLength: 256,
-                nullable: false,
-                defaultValue: "");
+                column: "Auth0Id",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "Auth0Id",
+            migrationBuilder.DropIndex(
+                name: "IX_Users_Auth0Id",
                 table: "Users");
         }
     }

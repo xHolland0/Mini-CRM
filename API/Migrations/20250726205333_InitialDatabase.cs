@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace API.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "TEXT", maxLength: 1000, nullable: true),
-                    Adress = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
+                    Address = table.Column<string>(type: "TEXT", maxLength: 500, nullable: true),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
                     Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "TEXT", nullable: false)
@@ -30,7 +30,7 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Contacts",
+                name: "Contact",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -43,16 +43,16 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                    table.PrimaryKey("PK_Contact", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Contacts_Tenants_TenantId",
+                        name: "FK_Contact_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "InventoryItems",
+                name: "InventoryItem",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -66,9 +66,9 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InventoryItems", x => x.Id);
+                    table.PrimaryKey("PK_InventoryItem", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InventoryItems_Tenants_TenantId",
+                        name: "FK_InventoryItem_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
@@ -76,7 +76,27 @@ namespace API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Transactions",
+                name: "Positions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    TenantId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Positions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Positions_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Transaction",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -90,9 +110,9 @@ namespace API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Transactions_Tenants_TenantId",
+                        name: "FK_Transaction_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
@@ -106,21 +126,26 @@ namespace API.Migrations
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     TenantId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
-                    Email = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    Auth0Id = table.Column<string>(type: "TEXT", maxLength: 256, nullable: false),
                     Role = table.Column<int>(type: "INTEGER", nullable: false),
                     Phone = table.Column<string>(type: "TEXT", maxLength: 20, nullable: true),
-                    Position = table.Column<string>(type: "TEXT", maxLength: 100, nullable: true)
+                    PositionId = table.Column<int>(type: "INTEGER", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Users_Positions_PositionId",
+                        column: x => x.PositionId,
+                        principalTable: "Positions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
                         name: "FK_Users_Tenants_TenantId",
                         column: x => x.TenantId,
                         principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -179,17 +204,18 @@ namespace API.Migrations
                         name: "FK_Tasks_Users_AssignedToUserId",
                         column: x => x.AssignedToUserId,
                         principalTable: "Users",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contacts_TenantId",
-                table: "Contacts",
+                name: "IX_Contact_TenantId",
+                table: "Contact",
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InventoryItems_TenantId",
-                table: "InventoryItems",
+                name: "IX_InventoryItem_TenantId",
+                table: "InventoryItem",
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
@@ -203,6 +229,11 @@ namespace API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Positions_TenantId",
+                table: "Positions",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Tasks_AssignedToUserId",
                 table: "Tasks",
                 column: "AssignedToUserId");
@@ -213,9 +244,14 @@ namespace API.Migrations
                 column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_TenantId",
-                table: "Transactions",
+                name: "IX_Transaction_TenantId",
+                table: "Transaction",
                 column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PositionId",
+                table: "Users",
+                column: "PositionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_TenantId",
@@ -227,10 +263,10 @@ namespace API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Contacts");
+                name: "Contact");
 
             migrationBuilder.DropTable(
-                name: "InventoryItems");
+                name: "InventoryItem");
 
             migrationBuilder.DropTable(
                 name: "Notes");
@@ -239,10 +275,13 @@ namespace API.Migrations
                 name: "Tasks");
 
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "Transaction");
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "Positions");
 
             migrationBuilder.DropTable(
                 name: "Tenants");

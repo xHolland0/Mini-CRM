@@ -1,3 +1,4 @@
+import { useEffect, useState, useRef } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -6,6 +7,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress'; // Yükleme göstergesi için
 
 // Layout component'lerini içe aktar
 import DashboardLayout from '../Components/Layout/DashboardLayout';
@@ -13,15 +15,13 @@ import DashboardLayout from '../Components/Layout/DashboardLayout';
 // Sayfa component'lerini içe aktar
 import DashboardPage from '../Pages/DashboardPage';
 import UserProfilePage from '../Pages/User/UserProfile'; 
+
+// API hook'unu içe aktar
 import useApi from '../Hooks/UseApi';
-import { useEffect, useState } from 'react';
-import { CircularProgress } from '@mui/material';
-import UserListPage from '../Pages/User/UserList';
 
 /**
  * Uygulamanın tüm rotalarını ve kimlik doğrulama yönlendirme mantığını içeren bileşen.
  */
-
 function AppRoutes() {
   const { 
     isAuthenticated, 
@@ -30,28 +30,58 @@ function AppRoutes() {
 
   const api = useApi();
   const [isSyncingUser, setIsSyncingUser] = useState(true); // Kullanıcı senkronizasyon durumunu takip et
+  // hasSynced useRef'i, senkronizasyonun mevcut oturumda bir kez yapılıp yapılmadığını takip eder.
+  // Component yeniden render olsa bile değerini korur ve useEffect'in çift tetiklenmesini engeller.
+  const hasSynced = useRef(false); 
+
+  // Component her render edildiğinde logla
+  console.log('AppRoutes Rendered. isAuthenticated:', isAuthenticated, 'hasSynced.current:', hasSynced.current);
 
   // Kullanıcı giriş yaptığında Auth0 kullanıcısını veritabanı ile senkronize et
   useEffect(() => {
+    console.log('AppRoutes useEffect Triggered. isAuthenticated:', isAuthenticated, 'hasSynced.current (inside useEffect):', hasSynced.current);
+
     const syncUserWithBackend = async () => {
-      if (isAuthenticated) {
+      console.log('syncUserWithBackend called. isAuthenticated:', isAuthenticated, 'hasSynced.current:', hasSynced.current);
+      // Sadece kimlik doğrulandıysa VE daha önce mevcut oturumda senkronize edilmediyse çalıştır
+      if (isAuthenticated && !hasSynced.current) {
+        console.log('Condition met: Authenticated and NOT synced. Proceeding with sync...');
         setIsSyncingUser(true);
         try {
           // API'deki /api/users/sync endpoint'ini çağır
-          const response = await api.post('/users/sync');
+          // Boş bir istek gövdesi göndermek yerine 'undefined' gönderiyoruz.
+          // Axios, undefined bir gövde gönderildiğinde Content-Type başlığını göndermez,
+          // bu da .NET tarafındaki JSON ayrıştırma hatasını engeller.
+          const response = await api.post('/users/sync', undefined); 
           console.log('Kullanıcı başarıyla senkronize edildi veya zaten mevcut:', response.data);
+          hasSynced.current = true; // Senkronizasyon yapıldı olarak işaretle
+          console.log('hasSynced.current set to TRUE.');
         } catch (error) {
           console.error('Kullanıcı senkronizasyonunda hata:', error);
           // Hata durumunda kullanıcıya bilgi verebilirsiniz
         } finally {
           setIsSyncingUser(false);
+          console.log('syncUserWithBackend finished.');
         }
+      } else if (!isAuthenticated) {
+        console.log('User is NOT authenticated. Resetting hasSynced.current.');
+        hasSynced.current = false; // Kullanıcı oturumu kapanırsa senkronizasyon durumunu sıfırla
+        setIsSyncingUser(false);
       } else {
-        setIsSyncingUser(false); // Oturum açmamışsa senkronizasyon gerekmez
+        console.log('User is authenticated but already synced or condition not met. Skipping sync.');
+        setIsSyncingUser(false); 
       }
     };
 
     syncUserWithBackend();
+
+    // Cleanup fonksiyonu (component unmount edildiğinde veya bağımlılıklar değiştiğinde çalışır)
+    return () => {
+      console.log('AppRoutes useEffect Cleanup. isAuthenticated:', isAuthenticated, 'hasSynced.current:', hasSynced.current);
+      // Eğer component unmount oluyorsa ve StrictMode nedeniyle tekrar mount ediliyorsa,
+      // hasSynced.current'ı burada sıfırlamak istemeyiz, çünkü bu StrictMode'un doğasıdır.
+      // Sadece !isAuthenticated durumunda sıfırlama yapıyoruz.
+    };
   }, [isAuthenticated, api]); // isAuthenticated veya api değiştiğinde çalıştır
 
   // Kullanıcı senkronize edilirken bir yükleme ekranı göster
@@ -112,7 +142,6 @@ function AppRoutes() {
           <DashboardLayout>
             <Routes> 
               <Route path="/" element={<DashboardPage />} />
-              <Route path="users" element={<UserListPage />} /> 
               <Route path="profile" element={<UserProfilePage />} /> 
               {/* İleride eklenecek diğer sayfalar */}
               <Route path="*" element={<Navigate to="/" />} /> 
@@ -130,4 +159,3 @@ function AppRoutes() {
 }
 
 export default AppRoutes;
-

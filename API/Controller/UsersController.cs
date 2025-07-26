@@ -28,6 +28,7 @@ namespace API.Controllers
         {
             var users = await _context.Users
                 .Include(u => u.Tenant) 
+                .Include(u => u.Position) 
                 .Include(u => u.Tasks)  
                 .Include(u => u.Notes)  
                 .ToListAsync(); 
@@ -41,6 +42,7 @@ namespace API.Controllers
         {
             var user = await _context.Users
                 .Include(u => u.Tenant)
+                .Include(u => u.Position)
                 .Include(u => u.Tasks)
                 .Include(u => u.Notes)
                 .FirstOrDefaultAsync(u => u.Id == id);
@@ -78,25 +80,18 @@ namespace API.Controllers
             // Veritabanında bu Auth0Id'ye sahip bir kullanıcı var mı kontrol et
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Auth0Id == auth0Id);
 
+            // Auth0 Action'ınızdaki özel claim URL'lerini kullanarak e-posta ve isim almaya çalışın
+            // Bu değerler sadece loglama ve doğrulama amaçlıdır, veritabanına kaydedilmez.
+            var emailFromAuth0 = User.FindFirst("https://localhost:3000/email")?.Value;
+            var nameFromAuth0 = User.FindFirst("https://localhost:3000/name")?.Value;
+
             if (user == null)
             {
                 // Kullanıcı yoksa, yeni bir kayıt oluştur
-                // Auth0'dan gelen diğer claim'leri almayı dene
-                // Genellikle Auth0, 'name' ve 'email' claim'lerini doğrudan gönderir.
-                var email = User.FindFirst("email")?.Value ?? User.FindFirst(ClaimTypes.Email)?.Value;
-                var name = User.FindFirst("name")?.Value ?? User.FindFirst(ClaimTypes.Name)?.Value;
-                
-                // Eğer isim hala boşsa, nickname'i dene (Auth0'dan gelebilir)
-                if (string.IsNullOrEmpty(name))
-                {
-                    name = User.FindFirst("nickname")?.Value;
-                }
-
-                // Hangi claim'lerin geldiğini görmek için konsola yazdır (GEÇİCİ)
                 Console.WriteLine($"--- SyncUser Çağrısı ---");
                 Console.WriteLine($"Auth0Id: {auth0Id}");
-                Console.WriteLine($"Alınan Email: {email}");
-                Console.WriteLine($"Alınan İsim: {name}");
+                Console.WriteLine($"Auth0'dan Alınan Email (Özel Claim): {emailFromAuth0 ?? "Yok"}");
+                Console.WriteLine($"Auth0'dan Alınan İsim (Özel Claim): {nameFromAuth0 ?? "Yok"}");
                 Console.WriteLine($"Tüm Claimler:");
                 foreach (var claim in User.Claims)
                 {
@@ -104,36 +99,54 @@ namespace API.Controllers
                 }
                 Console.WriteLine($"-----------------------");
 
-
-                // TODO: TenantId'yi dinamik olarak belirlemeniz gerekecek.
-                // Şimdilik varsayılan bir TenantId kullanıyoruz (örneğin 1).
-                // Gerçek bir uygulamada, bu TenantId'yi ya bir config'den alırsınız
-                // ya da Auth0'dan gelen custom claim'lerden okursunuz.
                 var defaultTenantId = 1; // Varsayılan kiracı ID'si, kendi veritabanınızda mevcut olmalı!
-
-                // TODO: Rolü dinamik olarak belirlemeniz gerekecek.
-                // Şimdilik varsayılan bir rol atıyoruz (örneğin Employee).
-                // Gerçek bir uygulamada, bu rolü Auth0'dan gelen custom claim'lerden okuyabilirsiniz.
                 var defaultRole = UserRole.Employee; // Varsayılan rol
+                int? defaultPositionId = null; // Başlangıçta pozisyon atanmamış olabilir
 
                 user = new User
                 {
                     Auth0Id = auth0Id,
-                    Email = email ?? "bilinmeyen@example.com", // E-posta yoksa varsayılan
-                    Name = name ?? "Bilinmeyen Kullanıcı", // İsim yoksa varsayılan
                     TenantId = defaultTenantId, 
-                    Role = defaultRole // Yeni kullanıcıya varsayılan rol atandı
+                    Role = defaultRole,
+                    Phone = null, // Yeni kullanıcı için başlangıçta telefon numarası boş
+                    PositionId = defaultPositionId 
                 };
 
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
 
-                // Yeni oluşturulan kullanıcıyı döndür
-                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+                // Yeni oluşturulan kullanıcıyı döndürürken ilişkili verileri de yükle
+                // CreatedAtAction, GetUser'ı çağıracağı için bu yüklemeler orada yapılacaktır.
+                // Burada sadece temel bilgileri döndürelim.
+                return CreatedAtAction(nameof(GetUser), new { id = user.Id }, new 
+                {
+                    user.Id,
+                    user.Auth0Id,
+                    user.TenantId,
+                    user.Role,
+                    user.Phone,
+                    user.PositionId,
+                    // Tenant ve Position isimlerini de dahil edebiliriz, ancak null kontrolü ile
+                    TenantName = user.Tenant?.Name, 
+                    PositionName = user.Position?.Name 
+                });
             }
 
-            // Kullanıcı zaten varsa, mevcut kullanıcıyı döndür
-            return Ok(user);
+            // Kullanıcı zaten varsa, mevcut kullanıcıyı döndür (basitleştirilmiş versiyon)
+            // Sadece temel özellikleri ve ilişkili nesnelerin isimlerini döndürüyoruz.
+            // Bu, döngüsel referanslardan kaynaklanan serileştirme hatalarını önlemelidir.
+            return Ok(new 
+            {
+                user.Id,
+                user.Auth0Id,
+                user.TenantId,
+                user.Role,
+                user.Phone,
+                user.PositionId,
+                // İlişkili nesneleri yükleyip isimlerini ekliyoruz
+                TenantName = user.Tenant?.Name, // Tenant'ın adını güvenli bir şekilde al
+                PositionName = user.Position?.Name // Position'ın adını güvenli bir şekilde al
+            });
         }
 
         // PUT: api/users/{id}

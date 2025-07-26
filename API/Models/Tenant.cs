@@ -1,40 +1,42 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; // Eğer Data Annotations kullanmak istersen
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
 
-namespace API.Models
-{
-    public class Tenant
+    namespace API.Models
     {
-        [Key] // Opsiyonel, EF Core Id ismini otomatik algılar
-        public int Id { get; set; }
+        public class Tenant
+        {
+            [Key]
+            public int Id { get; set; }
 
-        [Required] // Eğer boş olmaması gerekiyorsa
-        [MaxLength(255)] // Maksimum uzunluk belirle
-        public string Name { get; set; }
+            [Required]
+            [MaxLength(255)]
+            public string Name { get; set; }
 
-        [MaxLength(1000)] // Opsiyonel
-        public string? Description { get; set; } // Nullable
+            [MaxLength(1000)]
+            public string? Description { get; set; }
 
-        [MaxLength(500)]
-        public string? Adress { get; set; } // Nullable, "Address" olarak yazmak daha yaygın
+            [MaxLength(500)]
+            public string? Address { get; set; } // <-- Burası "Address" olmalı, "Adress" değil
 
-        [MaxLength(20)] // Telefon numarası uzunluğu için uygun bir değer
-        public string? Phone { get; set; } // Nullable
+            [MaxLength(20)]
+            public string? Phone { get; set; }
 
-        [Required]
-        [EmailAddress] // E-posta formatı kontrolü için
-        [MaxLength(255)]
-        public string Email { get; set; }
+            [Required]
+            [EmailAddress]
+            [MaxLength(255)]
+            public string Email { get; set; }
 
-        public DateTime CreatedDate { get; set; } = DateTime.UtcNow; // Otomatik olarak oluşturulma tarihi
+            public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
 
-        // Navigation properties
-        public ICollection<User>? Users { get; set; }
-        public ICollection<Task>? Tasks { get; set; }
-        public ICollection<Note>? Notes { get; set; }
-        public ICollection<Transaction>? Transactions { get; set; }
-        public ICollection<InventoryItem>? InventoryItems { get; set; }
-        public ICollection<Contact>? Contacts { get; set; }
+            // Navigation properties
+            public ICollection<User>? Users { get; set; }
+            public ICollection<Task>? Tasks { get; set; }
+            public ICollection<Position>? Positions { get; set; } 
+            public ICollection<Note>? Notes { get; set; }
+            public ICollection<Transaction>? Transactions { get; set; }
+            public ICollection<InventoryItem>? InventoryItems { get; set; }
+            public ICollection<Contact>? Contacts { get; set; }
+        }
     }
-}
+    

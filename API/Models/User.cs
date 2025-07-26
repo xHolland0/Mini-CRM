@@ -2,39 +2,40 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore; 
 
 namespace API.Models
 {
-    // Kullanıcı rolleri 
+    // Kullanıcı rolleri için enum tanımı
     public enum UserRole
     {
-        Admin,    
+        Admin,   
         Manager,  
         Employee, 
-        
     }
 
+    [Index(nameof(Auth0Id), IsUnique = true)] 
     public class User
     {
-        [Key] 
+        [Key] // Primary Key olarak işaretler
         public int Id { get; set; }
 
-        [Required] 
-        public int TenantId { get; set; } 
-
+        [Required] // Zorunlu alan
+        public int TenantId { get; set; } // Foreign Key: Kullanıcının ait olduğu kiracı ID'si
 
         [Required] 
         [MaxLength(256)] 
-        public required string Auth0Id { get; set; } 
+        public string Auth0Id { get; set; } 
 
-        [Required] 
-        [MaxLength(255)] 
-        public required string Name { get; set; }
+        // Name ve Email artık burada tutulmuyor, Auth0'dan çekilecek.
+        // [Required] 
+        // [MaxLength(255)] 
+        // public string Name { get; set; }
 
-        [Required] 
-        [EmailAddress] 
-        [MaxLength(255)] 
-        public required string Email { get; set; }
+        // [Required] 
+        // [EmailAddress] 
+        // [MaxLength(255)] 
+        // public string Email { get; set; }
 
         [Required] 
         public UserRole Role { get; set; } 
@@ -42,11 +43,11 @@ namespace API.Models
         [MaxLength(20)] 
         public string? Phone { get; set; } 
 
-        [MaxLength(100)] 
-        public string? Position { get; set; } 
+        public int? PositionId { get; set; } // Nullable Foreign Key: Kullanıcının pozisyon ID'si
 
-        // Navigation properties
-        public Tenant Tenant { get; set; } = null!; // Zorunlu ilişki: Kullanıcının ait olduğu kiracı
+        // Navigation properties (ilişkili tablolar)
+        public Tenant Tenant { get; set; } = null!; 
+        public Position? Position { get; set; } 
         public ICollection<Task>? Tasks { get; set; } 
         public ICollection<Note>? Notes { get; set; } 
     }

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250725222251_AddAuth0IdAndRolesToUsers")]
-    partial class AddAuth0IdAndRolesToUsers
+    [Migration("20250726205333_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,7 +49,7 @@ namespace API.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contact");
                 });
 
             modelBuilder.Entity("API.Models.InventoryItem", b =>
@@ -83,7 +83,7 @@ namespace API.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("InventoryItems");
+                    b.ToTable("InventoryItem");
                 });
 
             modelBuilder.Entity("API.Models.Note", b =>
@@ -117,6 +117,27 @@ namespace API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("API.Models.Position", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.ToTable("Positions");
                 });
 
             modelBuilder.Entity("API.Models.Task", b =>
@@ -164,7 +185,7 @@ namespace API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Adress")
+                    b.Property<string>("Address")
                         .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
@@ -223,7 +244,7 @@ namespace API.Migrations
 
                     b.HasIndex("TenantId");
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transaction");
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -237,23 +258,12 @@ namespace API.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("Phone")
                         .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Position")
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
+                    b.Property<int?>("PositionId")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Role")
                         .HasColumnType("INTEGER");
@@ -262,6 +272,8 @@ namespace API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PositionId");
 
                     b.HasIndex("TenantId");
 
@@ -307,11 +319,23 @@ namespace API.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("API.Models.Position", b =>
+                {
+                    b.HasOne("API.Models.Tenant", "Tenant")
+                        .WithMany("Positions")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("API.Models.Task", b =>
                 {
                     b.HasOne("API.Models.User", "AssignedToUser")
                         .WithMany("Tasks")
-                        .HasForeignKey("AssignedToUserId");
+                        .HasForeignKey("AssignedToUserId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("API.Models.Tenant", "Tenant")
                         .WithMany("Tasks")
@@ -337,13 +361,25 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.User", b =>
                 {
+                    b.HasOne("API.Models.Position", "Position")
+                        .WithMany("Users")
+                        .HasForeignKey("PositionId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("API.Models.Tenant", "Tenant")
                         .WithMany("Users")
                         .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Position");
+
                     b.Navigation("Tenant");
+                });
+
+            modelBuilder.Entity("API.Models.Position", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("API.Models.Tenant", b =>
@@ -353,6 +389,8 @@ namespace API.Migrations
                     b.Navigation("InventoryItems");
 
                     b.Navigation("Notes");
+
+                    b.Navigation("Positions");
 
                     b.Navigation("Tasks");
 
