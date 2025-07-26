@@ -1,46 +1,53 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace API.Models
 {
-    public enum UserRole // Role enum'u
+    // Kullanıcı rolleri 
+    public enum UserRole
     {
-        Admin,
-        Manager,
-        Employee,
-        // İhtiyacına göre diğer roller eklenebilir
+        Admin,    
+        Manager,  
+        Employee, 
+        
     }
 
     public class User
     {
-        [Key]
+        [Key] 
         public int Id { get; set; }
 
-        [Required]
-        public int TenantId { get; set; } // Foreign Key
+        [Required] 
+        public int TenantId { get; set; } 
 
-        [Required]
-        [MaxLength(255)]
-        public string Name { get; set; }
 
-        [Required]
-        [EmailAddress]
-        [MaxLength(255)]
-        public string Email { get; set; }
+        [Required] 
+        [MaxLength(256)] 
+        public required string Auth0Id { get; set; } 
 
-        [Required]
-        public UserRole Role { get; set; } // Enum
+        [Required] 
+        [MaxLength(255)] 
+        public required string Name { get; set; }
 
-        [MaxLength(20)]
-        public string? Phone { get; set; }
+        [Required] 
+        [EmailAddress] 
+        [MaxLength(255)] 
+        public required string Email { get; set; }
 
-        [MaxLength(100)]
-        public string? Position { get; set; }
+        [Required] 
+        public UserRole Role { get; set; } 
 
-        // Navigation property
-        public Tenant Tenant { get; set; } = null!; // Zorunlu ilişki
-        public ICollection<Task>? Tasks { get; set; } // Assigned tasks
-        public ICollection<Note>? Notes { get; set; } // Created notes
+        [MaxLength(20)] 
+        public string? Phone { get; set; } 
+
+        [MaxLength(100)] 
+        public string? Position { get; set; } 
+
+        // Navigation properties
+        public Tenant Tenant { get; set; } = null!; // Zorunlu ilişki: Kullanıcının ait olduğu kiracı
+        public ICollection<Task>? Tasks { get; set; } 
+        public ICollection<Note>? Notes { get; set; } 
     }
 }
