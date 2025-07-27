@@ -105,6 +105,7 @@ Mini_CRM/
 | `InventoryItem` | Items with stock quantity and images        |
 | `FinanceRecord` | Financial income/expense records            |
 | `Contact`       | Directory of external or internal contacts  |
+| `Positions`     | Users Positions                             |
 
 
 ## 👨‍💻 Developer
