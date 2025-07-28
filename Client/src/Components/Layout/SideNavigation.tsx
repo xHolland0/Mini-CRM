@@ -12,6 +12,10 @@ import {
 } from '@mui/material';
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import WidgetsIcon from '@mui/icons-material/Widgets';
+import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import EventNoteIcon from '@mui/icons-material/EventNote';
+import TaskIcon from '@mui/icons-material/Task';
 
 const drawerWidth = 240; // Sidebar genişliği
 
@@ -22,6 +26,10 @@ const drawerWidth = 240; // Sidebar genişliği
 function SideNavigation() {
   const navItems = [
     { text: 'Dashboard', icon: <HomeOutlinedIcon />, path: '/dashboard' },
+    { text: 'Inventory', icon: <WidgetsIcon />, path: '/dashboard/inventory' },
+    { text: 'Employees', icon: <PeopleAltIcon />, path: '/dashboard/employees' },
+    { text: 'Notes', icon: <EventNoteIcon />, path: '/dashboard/notes' },
+    { text: 'Tasks', icon: <TaskIcon />, path: '/dashboard/tasks' },
   ];
 
   return (

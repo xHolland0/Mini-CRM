@@ -38,6 +38,7 @@ function DashboardLayout({ children }: { children: React.ReactNode }) {
       <Box
         component="main"
         sx={{
+          width:'1600px',
           flexGrow: 1, // Kalan tüm yatay alanı kapla
           p: 3, // Sayfa içeriği için padding
           ml: `${drawerWidth}px`, // Sidebar'ın sağında başlaması için margin-left

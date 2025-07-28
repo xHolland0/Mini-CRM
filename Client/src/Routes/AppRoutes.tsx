@@ -13,11 +13,15 @@ import DashboardLayout from '../Components/Layout/DashboardLayout';
 
 // Sayfa component'lerini içe aktar
 import DashboardPage from '../Pages/DashboardPage';
+import InventoryPage from '../Pages/InventoryPage';
 import UserProfilePage from '../Pages/User/UserProfile'; 
 
 // API hook'unu içe aktar
 import useApi from '../Hooks/UseApi';
 import AuthButton from '../Components/AuthButton';
+import EmployeesPage from '../Pages/EmployeesPage';
+import NotesPage from '../Pages/NotesPage';
+import TasksPage from '../Pages/TasksPage';
 
 /**
  * Uygulamanın tüm rotalarını ve kimlik doğrulama yönlendirme mantığını içeren bileşen.
@@ -137,6 +141,11 @@ function AppRoutes() {
             <Routes> 
               <Route path="/" element={<DashboardPage />} />
               <Route path="profile" element={<UserProfilePage />} /> 
+              <Route path="inventory" element={<InventoryPage />} /> 
+              <Route path="employees" element={<EmployeesPage />} /> 
+              <Route path="notes" element={<NotesPage />} /> 
+              <Route path="tasks" element={<TasksPage />} /> 
+
               {/* İleride eklenecek diğer sayfalar */}
               <Route path="*" element={<Navigate to="/" />} /> 
             </Routes>

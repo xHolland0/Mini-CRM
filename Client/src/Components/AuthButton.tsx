@@ -17,14 +17,14 @@ function AuthButtons() {
           color="inherit"
           onClick={() => loginWithRedirect()}
           sx={{
-            backgroundColor: (theme) => theme.palette.warning.main,
+            backgroundColor:"#0600bd",
             fontWeight: "600",
             textTransform: "none",
             display: "block",
             borderRadius: 0,
             width: "100%",
             "&:hover": {
-              backgroundColor: (theme) => theme.palette.warning.dark, // Hover durumunda daha koyu warning rengi
+              backgroundColor:"#050099ff", // Hover durumunda daha koyu warning rengi
             },
           }}
         >
