@@ -51,16 +51,16 @@ function SideNavigation() {
       {/* Sidebar'ın en üst kısmında, MainAppBar'ın yüksekliği kadar boşluk bırakmak için Toolbar */}
       <Toolbar>
         <Typography
-          variant="h4"
+          variant="h5"
           noWrap
           component="div"
           textAlign="center"
           fontWeight={600}
           sx={{
-            color: (theme) => theme.palette.text.primary, // Temadan al
+            color: (theme) => theme.palette.text.primary, 
           }}
         >
-          Mini CRM
+          Mini Ecboard
         </Typography>
       </Toolbar>
       <Box sx={{ overflow: 'auto' }}>

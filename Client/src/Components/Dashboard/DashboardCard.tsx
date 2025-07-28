@@ -48,8 +48,8 @@ function DashboardCard({ title, value, percentageChange, period, chartData }: {
         flexDirection: 'column',
         justifyContent: 'space-between',
         height: 130, // Sabit yükseklik
-        minWidth: 330, // Minimum genişlik
-        maxWidth: 340, // Maksimum genişlik
+        minWidth: 315, // Minimum genişlik
+        maxWidth: 320, // Maksimum genişlik
         flexGrow: 1, // Esnek büyüme
         // Dark/Light temaya göre arka plan rengi ve kenarlık
         backgroundImage: 'none',

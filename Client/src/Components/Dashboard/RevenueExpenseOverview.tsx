@@ -8,48 +8,49 @@ import DashboardCard from './DashboardCard'; // DashboardCard bileşenini içe a
 function RevenueExpenseOverview() {
   // Şimdilik statik veriler kullanıyoruz. Gerçek uygulamada API'den çekilecek.
   const incomeData = {
-    title: "Toplam Gelir",
+    title: "Total Income",
     value: "₺150.000",
     percentageChange: 25,
-    period: "Son 30 gün",
+    period: "Last 30 days",
     chartData: [10, 20, 15, 25, 30, 28, 35] // Örnek grafik verisi
   };
 
   const expenseData = {
-    title: "Toplam Gider",
+    title: "Total Expense",
     value: "₺75.000",
     percentageChange: -10,
-    period: "Son 30 gün",
+    period: "Last 30 days",
     chartData: [30, 60, 150, 20, 210, 18, 300] // Örnek grafik verisi
   };
 
   const profitLossData = {
-    title: "Net Kar/Zarar",
+    title: "Total Profit/Loss",
     value: "₺75.000",
     percentageChange: 15, // (150.000 - 75.000) / (önceki kar)
-    period: "Son 30 gün",
+    period: "Last 30 days",
     chartData: [5, 10, 8, 12, 15, 10, 20] // Örnek grafik verisi
   };
 
   return (
     <Box sx={{ mb: 4 }}>
+      <Grid container spacing={1} justifyContent="center"> {/* Kartları ortalamak için */}
 
-      <Grid container spacing={3} justifyContent="center"> {/* Kartları ortalamak için */}
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <DashboardCard {...incomeData} />
         </Grid>
 
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <DashboardCard {...expenseData} />
         </Grid>
 
-
-        <Grid item xs={12} sm={6} md={4} lg={3}>
+        <Grid item xs={12} sm={6} md={6} lg={3}>
           <DashboardCard {...profitLossData} />
         </Grid>
 
+
+        <Grid item xs={12} sm={6} md={6} lg={3}>
+          <DashboardCard {...expenseData} />
+        </Grid>
 
       </Grid>
     </Box>
