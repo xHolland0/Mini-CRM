@@ -6,8 +6,6 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Paper from '@mui/material/Paper';
 // import Toolbar from '@mui/material/Toolbar'; // Artık App.tsx'te Toolbar'a gerek yok
 
 // Rota component'ini içe aktar
@@ -47,7 +45,10 @@ function App() {
   }
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <Box sx={{  
+      display: 'flex', 
+      flexDirection: 'column',
+       minHeight: '100vh' }}>
       {/* MainAppBar artık App.tsx'te doğrudan render edilmiyor.
           DashboardLayout içinde veya AppRoutes'taki giriş ekranında yer alacak. */}
       {/* AppRoutes içeriğinin en üstten başlamasını sağla */}

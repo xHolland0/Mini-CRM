@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
 import {
-  Drawer, // Drawer'ı tekrar buraya alıyoruz
+  Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  Toolbar, // AppBar'ın yüksekliği kadar boşluk bırakmak için
-  Typography, // İsterseniz buraya bir başlık ekleyebilirsiniz
-  Box
+  Toolbar,
+  Typography,
+  Box,
 } from '@mui/material';
 
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
@@ -26,36 +26,51 @@ function SideNavigation() {
 
   return (
     <Drawer
-      variant="permanent" // Her zaman görünür olacak
+      variant="permanent"
       sx={{
         width: drawerWidth,
         flexShrink: 0,
         [`& .MuiDrawer-paper`]: {
           width: drawerWidth,
           boxSizing: 'border-box',
-          // Sidebar'ı AppBar'ın altından başlatmak için top boşluğu
-          top: 0, // Sidebar'ın en üstten başlamasını sağlıyoruz
-          height: '100vh', // Tam yüksekliği kaplamasını sağlıyoruz
-
-          backgroundColor: '#212121',
-          color:'White'
+          top: 0,
+          height: '100vh',
+          backgroundColor: (theme) => theme.palette.background.paper, // Temadan al
+          color: (theme) => theme.palette.text.primary, // Temadan al
         },
       }}
     >
       {/* Sidebar'ın en üst kısmında, MainAppBar'ın yüksekliği kadar boşluk bırakmak için Toolbar */}
       <Toolbar>
-        <Typography variant="h4" noWrap component="div" textAlign="center" fontWeight={600}>Mini CRM</Typography> 
-      </Toolbar> 
-      <Box sx={{ overflow: 'auto', bgcolor: '#212121',}}>
+        <Typography
+          variant="h4"
+          noWrap
+          component="div"
+          textAlign="center"
+          fontWeight={600}
+          sx={{
+            color: (theme) => theme.palette.text.primary, // Temadan al
+          }}
+        >
+          Mini CRM
+        </Typography>
+      </Toolbar>
+      <Box sx={{ overflow: 'auto' }}>
         <List>
           {navItems.map((item) => (
-            <ListItem key={item.text} disablePadding >
-              <ListItemButton 
-                sx={{color:'GrayText'}}
-                component={Link} 
-                to={item.path}   
+            <ListItem key={item.text} disablePadding>
+              <ListItemButton
+                sx={{
+                  color: (theme) => theme.palette.text.secondary, // Temadan al
+                }}
+                component={Link}
+                to={item.path}
               >
-                <ListItemIcon sx={{color:'GrayText'}}>
+                <ListItemIcon
+                  sx={{
+                    color: (theme) => theme.palette.text.secondary, // Temadan al
+                  }}
+                >
                   {item.icon}
                 </ListItemIcon>
                 <ListItemText primary={item.text} />

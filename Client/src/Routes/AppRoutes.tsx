@@ -4,7 +4,6 @@ import { useAuth0 } from '@auth0/auth0-react';
 
 // Material UI bileşenlerini içe aktar
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress'; // Yükleme göstergesi için
@@ -18,6 +17,7 @@ import UserProfilePage from '../Pages/User/UserProfile';
 
 // API hook'unu içe aktar
 import useApi from '../Hooks/UseApi';
+import AuthButton from '../Components/AuthButton';
 
 /**
  * Uygulamanın tüm rotalarını ve kimlik doğrulama yönlendirme mantığını içeren bileşen.
@@ -122,15 +122,9 @@ function AppRoutes() {
               <Typography variant="h5" component="h2" sx={{ color: 'text.primary', mb: 3 }}>
                 Devam etmek için lütfen giriş yapın.
               </Typography>
-              <Button 
-                variant="contained" 
-                color="primary" 
-                size="large"
-                onClick={() => loginWithRedirect()}
-                sx={{ px: 5, py: 1.5 }} 
-              >
-                Giriş Yap
-              </Button>
+
+              <AuthButton/>
+
             </Paper>
           </Box>
         )
